@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Foreword for Experienced Programmers &#8212; Flask Documentation (0.12)</title>
+    
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Installation" href="../installation/" />
+    <link rel="prev" title="Foreword" href="../foreword/" />
+   
+  
+    
+  
+  <link rel="canonical" href="../../latest/advanced_foreword/">
+  <link media="only screen and (max-device-width: 480px)" href="../_static/small.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body role="document">
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../installation/" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../foreword/" title="Foreword"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../">Flask Documentation (0.12)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+  
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="foreword-for-experienced-programmers">
+<span id="advanced-foreword"></span><h1>Foreword for Experienced Programmers<a class="headerlink" href="#foreword-for-experienced-programmers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="thread-locals-in-flask">
+<h2>Thread-Locals in Flask<a class="headerlink" href="#thread-locals-in-flask" title="Permalink to this headline">¶</a></h2>
+<p>One of the design decisions in Flask was that simple tasks should be simple;
+they should not take a lot of code and yet they should not limit you. Because
+of that, Flask has a few design choices that some people might find surprising or
+unorthodox. For example, Flask uses thread-local objects internally so that you
+don’t have to pass objects around from function to function within a request in
+order to stay threadsafe. This approach is convenient, but requires a valid
+request context for dependency injection or when attempting to reuse code which
+uses a value pegged to the request.  The Flask project is honest about
+thread-locals, does not hide them, and calls out in the code and documentation
+where they are used.</p>
+</div>
+<div class="section" id="develop-for-the-web-with-caution">
+<h2>Develop for the Web with Caution<a class="headerlink" href="#develop-for-the-web-with-caution" title="Permalink to this headline">¶</a></h2>
+<p>Always keep security in mind when building web applications.</p>
+<p>If you write a web application, you are probably allowing users to register
+and leave their data on your server.  The users are entrusting you with data.
+And even if you are the only user that might leave data in your application,
+you still want that data to be stored securely.</p>
+<p>Unfortunately, there are many ways the security of a web application can be
+compromised.  Flask protects you against one of the most common security
+problems of modern web applications: cross-site scripting (XSS).  Unless you
+deliberately mark insecure HTML as secure, Flask and the underlying Jinja2
+template engine have you covered.  But there are many more ways to cause
+security problems.</p>
+<p>The documentation will warn you about aspects of web development that require
+attention to security.  Some of these security concerns are far more complex
+than one might think, and we all sometimes underestimate the likelihood that a
+vulnerability will be exploited - until a clever attacker figures out a way to
+exploit our applications.  And don&#8217;t think that your application is not
+important enough to attract an attacker.  Depending on the kind of attack,
+chances are that automated bots are probing for ways to fill your database with
+spam, links to malicious software, and the like.</p>
+<p>Flask is no different from any other framework in that you the developer must
+build with caution, watching for exploits when building to your requirements.</p>
+</div>
+<div class="section" id="python-3-support-in-flask">
+<h2>Python 3 Support in Flask<a class="headerlink" href="#python-3-support-in-flask" title="Permalink to this headline">¶</a></h2>
+<p>Flask, its dependencies, and most Flask extensions all support Python 3.
+If you want to use Flask with Python 3 have a look at the <a class="reference internal" href="../python3/#python3-support"><span class="std std-ref">Python 3 Support</span></a> page.</p>
+<p>Continue to <a class="reference internal" href="../installation/#installation"><span class="std std-ref">Installation</span></a> or the <a class="reference internal" href="../quickstart/#quickstart"><span class="std std-ref">Quickstart</span></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../">
+  <img class="logo" src="../_static/flask.png" alt="Logo"/>
+</a></p>
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Foreword for Experienced Programmers</a><ul>
+<li><a class="reference internal" href="#thread-locals-in-flask">Thread-Locals in Flask</a></li>
+<li><a class="reference internal" href="#develop-for-the-web-with-caution">Develop for the Web with Caution</a></li>
+<li><a class="reference internal" href="#python-3-support-in-flask">Python 3 Support in Flask</a></li>
+</ul>
+</li>
+</ul>
+<h3>Versions</h3>
+<ul class="versions">
+  
+    
+      
+        
+      
+      <li><a href="../../dev/advanced_foreword/">Development</a>
+    
+    <span class=note>(unstable)</span>
+  
+    
+      <li><a href="." class="current">Flask 0.12.x</a>
+    
+    <span class=note>(stable)</span>
+  
+    
+      
+        
+      
+      <li><a href="../../0.11/advanced_foreword/">Flask 0.11.x</a>
+    
+    
+  
+    
+      
+        
+      
+      <li><a href="../../0.10/advanced_foreword/">Flask 0.10.x</a>
+    
+    
+  
+</ul>
+<div class="carbon_ads">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pocooorg" id="_carbonads_js"></script>
+</div><h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+      <li>Previous: <a href="../foreword/" title="previous chapter">Foreword</a></li>
+      <li>Next: <a href="../installation/" title="next chapter">Installation</a></li>
+  </ul></li>
+</ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010 - 2017, Armin Ronacher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tutorial &#8212; Flask Documentation (0.12)</title>
+    
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Introducing Flaskr" href="introduction/" />
+    <link rel="prev" title="Quickstart" href="../quickstart/" />
+   
+  
+    
+  
+  <link rel="canonical" href="../../latest/tutorial/">
+  <link media="only screen and (max-device-width: 480px)" href="../_static/small.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body role="document">
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="introduction/" title="Introducing Flaskr"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../quickstart/" title="Quickstart"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../">Flask Documentation (0.12)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+  
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>You want to develop an application with Python and Flask?  Here you have
+the chance to learn by example.  In this tutorial, we will create a simple
+microblogging application.  It only supports one user that can create
+text-only entries and there are no feeds or comments, but it still
+features everything you need to get started.  We will use Flask and SQLite
+as a database (which comes out of the box with Python) so there is nothing
+else you need.</p>
+<p>If you want the full source code in advance or for comparison, check out
+the <a class="reference external" href="https://github.com/pallets/flask/tree/master/examples/flaskr/">example source</a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction/">Introducing Flaskr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="folders/">Step 0: Creating The Folders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema/">Step 1: Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup/">Step 2: Application Setup Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packaging/">Step 3: Installing flaskr as a Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dbcon/">Step 4: Database Connections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dbinit/">Step 5: Creating The Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="views/">Step 6: The View Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views/#show-entries">Show Entries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/#add-new-entry">Add New Entry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views/#login-and-logout">Login and Logout</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="templates/">Step 7: The Templates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="templates/#layout-html">layout.html</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates/#show-entries-html">show_entries.html</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates/#login-html">login.html</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="css/">Step 8: Adding Style</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing/">Bonus: Testing the Application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing/#adding-tests-to-flaskr">Adding tests to flaskr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing/#running-the-tests">Running the tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing/#testing-setuptools">Testing + setuptools</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../">
+  <img class="logo" src="../_static/flask.png" alt="Logo"/>
+</a></p><h3>Versions</h3>
+<ul class="versions">
+  
+    
+      
+        
+      
+      <li><a href="../../dev/tutorial/">Development</a>
+    
+    <span class=note>(unstable)</span>
+  
+    
+      <li><a href="." class="current">Flask 0.12.x</a>
+    
+    <span class=note>(stable)</span>
+  
+    
+      
+        
+      
+      <li><a href="../../0.11/tutorial/">Flask 0.11.x</a>
+    
+    
+  
+    
+      
+        
+      
+      <li><a href="../../0.10/tutorial/">Flask 0.10.x</a>
+    
+    
+  
+</ul>
+<div class="carbon_ads">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pocooorg" id="_carbonads_js"></script>
+</div><h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+      <li>Previous: <a href="../quickstart/" title="previous chapter">Quickstart</a></li>
+      <li>Next: <a href="introduction/" title="next chapter">Introducing Flaskr</a></li>
+  </ul></li>
+</ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010 - 2017, Armin Ronacher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  
+  </body>
+</html>

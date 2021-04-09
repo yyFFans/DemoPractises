@@ -1,0 +1,17 @@
+{% import "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Flasky{% endblock %}
+{% block page_content %}
+<div class="page-header">
+  <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+</div>
+{{ wtf.quick_form(form) }}
+{% endblock %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for msg in messages %}
+            {{ msg }}
+        {% endfor %}
+    {% endif %}
+{% endwith %}

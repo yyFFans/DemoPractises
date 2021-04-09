@@ -1,0 +1,650 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration Handling &#8212; Flask Documentation (0.12)</title>
+    
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Signals" href="../signals/" />
+    <link rel="prev" title="Application Errors" href="../errorhandling/" />
+   
+  
+    
+  
+  <link rel="canonical" href="../../latest/config/">
+  <link media="only screen and (max-device-width: 480px)" href="../_static/small.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body role="document">
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../signals/" title="Signals"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../errorhandling/" title="Application Errors"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../">Flask Documentation (0.12)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+  
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration-handling">
+<span id="config"></span><h1>Configuration Handling<a class="headerlink" href="#configuration-handling" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.3.</span></p>
+</div>
+<p>Applications need some kind of configuration.  There are different settings
+you might want to change depending on the application environment like
+toggling the debug mode, setting the secret key, and other such
+environment-specific things.</p>
+<p>The way Flask is designed usually requires the configuration to be
+available when the application starts up.  You can hardcode the
+configuration in the code, which for many small applications is not
+actually that bad, but there are better ways.</p>
+<p>Independent of how you load your config, there is a config object
+available which holds the loaded configuration values:
+The <a class="reference internal" href="../api/#flask.Flask.config" title="flask.Flask.config"><code class="xref py py-attr docutils literal"><span class="pre">config</span></code></a> attribute of the <a class="reference internal" href="../api/#flask.Flask" title="flask.Flask"><code class="xref py py-class docutils literal"><span class="pre">Flask</span></code></a>
+object.  This is the place where Flask itself puts certain configuration
+values and also where extensions can put their configuration values.  But
+this is also where you can have your own configuration.</p>
+<div class="section" id="configuration-basics">
+<h2>Configuration Basics<a class="headerlink" href="#configuration-basics" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../api/#flask.Flask.config" title="flask.Flask.config"><code class="xref py py-attr docutils literal"><span class="pre">config</span></code></a> is actually a subclass of a dictionary and
+can be modified just like any dictionary:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Certain configuration values are also forwarded to the
+<a class="reference internal" href="../api/#flask.Flask" title="flask.Flask"><code class="xref py py-attr docutils literal"><span class="pre">Flask</span></code></a> object so you can read and write them from there:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>To update multiple keys at once you can use the <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict.update" title="(in Python v3.6)"><code class="xref py py-meth docutils literal"><span class="pre">dict.update()</span></code></a>
+method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">DEBUG</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">SECRET_KEY</span><span class="o">=</span><span class="s1">&#39;...&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="builtin-configuration-values">
+<h2>Builtin Configuration Values<a class="headerlink" href="#builtin-configuration-values" title="Permalink to this headline">¶</a></h2>
+<p>The following configuration values are used internally by Flask:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">DEBUG</span></code></td>
+<td>enable/disable debug mode</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">TESTING</span></code></td>
+<td>enable/disable testing mode</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">PROPAGATE_EXCEPTIONS</span></code></td>
+<td>explicitly enable or disable the
+propagation of exceptions.  If not set or
+explicitly set to <code class="docutils literal"><span class="pre">None</span></code> this is
+implicitly true if either <code class="docutils literal"><span class="pre">TESTING</span></code> or
+<code class="docutils literal"><span class="pre">DEBUG</span></code> is true.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">PRESERVE_CONTEXT_ON_EXCEPTION</span></code></td>
+<td>By default if the application is in
+debug mode the request context is not
+popped on exceptions to enable debuggers
+to introspect the data.  This can be
+disabled by this key.  You can also use
+this setting to force-enable it for non
+debug execution which might be useful to
+debug production applications (but also
+very risky).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">SECRET_KEY</span></code></td>
+<td>the secret key</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SESSION_COOKIE_NAME</span></code></td>
+<td>the name of the session cookie</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">SESSION_COOKIE_DOMAIN</span></code></td>
+<td>the domain for the session cookie.  If
+this is not set, the cookie will be
+valid for all subdomains of
+<code class="docutils literal"><span class="pre">SERVER_NAME</span></code>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SESSION_COOKIE_PATH</span></code></td>
+<td>the path for the session cookie.  If
+this is not set the cookie will be valid
+for all of <code class="docutils literal"><span class="pre">APPLICATION_ROOT</span></code> or if
+that is not set for <code class="docutils literal"><span class="pre">'/'</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">SESSION_COOKIE_HTTPONLY</span></code></td>
+<td>controls if the cookie should be set
+with the httponly flag.  Defaults to
+<code class="docutils literal"><span class="pre">True</span></code>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SESSION_COOKIE_SECURE</span></code></td>
+<td>controls if the cookie should be set
+with the secure flag.  Defaults to
+<code class="docutils literal"><span class="pre">False</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">PERMANENT_SESSION_LIFETIME</span></code></td>
+<td>the lifetime of a permanent session as
+<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">datetime.timedelta</span></code></a> object.
+Starting with Flask 0.8 this can also be
+an integer representing seconds.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SESSION_REFRESH_EACH_REQUEST</span></code></td>
+<td>this flag controls how permanent
+sessions are refreshed.  If set to <code class="docutils literal"><span class="pre">True</span></code>
+(which is the default) then the cookie
+is refreshed each request which
+automatically bumps the lifetime.  If
+set to <code class="docutils literal"><span class="pre">False</span></code> a <cite>set-cookie</cite> header is
+only sent if the session is modified.
+Non permanent sessions are not affected
+by this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">USE_X_SENDFILE</span></code></td>
+<td>enable/disable x-sendfile</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">LOGGER_NAME</span></code></td>
+<td>the name of the logger</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">LOGGER_HANDLER_POLICY</span></code></td>
+<td>the policy of the default logging
+handler.  The default is <code class="docutils literal"><span class="pre">'always'</span></code>
+which means that the default logging
+handler is always active.  <code class="docutils literal"><span class="pre">'debug'</span></code>
+will only activate logging in debug
+mode, <code class="docutils literal"><span class="pre">'production'</span></code> will only log in
+production and <code class="docutils literal"><span class="pre">'never'</span></code> disables it
+entirely.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">SERVER_NAME</span></code></td>
+<td>the name and port number of the server.
+Required for subdomain support (e.g.:
+<code class="docutils literal"><span class="pre">'myapp.dev:5000'</span></code>)  Note that
+localhost does not support subdomains so
+setting this to “localhost” does not
+help.  Setting a <code class="docutils literal"><span class="pre">SERVER_NAME</span></code> also
+by default enables URL generation
+without a request context but with an
+application context.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">APPLICATION_ROOT</span></code></td>
+<td>If the application does not occupy
+a whole domain or subdomain this can
+be set to the path where the application
+is configured to live.  This is for
+session cookie as path value.  If
+domains are used, this should be
+<code class="docutils literal"><span class="pre">None</span></code>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">MAX_CONTENT_LENGTH</span></code></td>
+<td>If set to a value in bytes, Flask will
+reject incoming requests with a
+content length greater than this by
+returning a 413 status code.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">SEND_FILE_MAX_AGE_DEFAULT</span></code></td>
+<td>Default cache control max age to use with
+<a class="reference internal" href="../api/#flask.Flask.send_static_file" title="flask.Flask.send_static_file"><code class="xref py py-meth docutils literal"><span class="pre">send_static_file()</span></code></a> (the
+default static file handler) and
+<a class="reference internal" href="../api/#flask.send_file" title="flask.send_file"><code class="xref py py-func docutils literal"><span class="pre">send_file()</span></code></a>, as
+<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">datetime.timedelta</span></code></a> or as seconds.
+Override this value on a per-file
+basis using the
+<a class="reference internal" href="../api/#flask.Flask.get_send_file_max_age" title="flask.Flask.get_send_file_max_age"><code class="xref py py-meth docutils literal"><span class="pre">get_send_file_max_age()</span></code></a>
+hook on <a class="reference internal" href="../api/#flask.Flask" title="flask.Flask"><code class="xref py py-class docutils literal"><span class="pre">Flask</span></code></a> or
+<a class="reference internal" href="../api/#flask.Blueprint" title="flask.Blueprint"><code class="xref py py-class docutils literal"><span class="pre">Blueprint</span></code></a>,
+respectively. Defaults to 43200 (12 hours).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">TRAP_HTTP_EXCEPTIONS</span></code></td>
+<td>If this is set to <code class="docutils literal"><span class="pre">True</span></code> Flask will
+not execute the error handlers of HTTP
+exceptions but instead treat the
+exception like any other and bubble it
+through the exception stack.  This is
+helpful for hairy debugging situations
+where you have to find out where an HTTP
+exception is coming from.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">TRAP_BAD_REQUEST_ERRORS</span></code></td>
+<td>Werkzeug&#8217;s internal data structures that
+deal with request specific data will
+raise special key errors that are also
+bad request exceptions.  Likewise many
+operations can implicitly fail with a
+BadRequest exception for consistency.
+Since it&#8217;s nice for debugging to know
+why exactly it failed this flag can be
+used to debug those situations.  If this
+config is set to <code class="docutils literal"><span class="pre">True</span></code> you will get
+a regular traceback instead.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">PREFERRED_URL_SCHEME</span></code></td>
+<td>The URL scheme that should be used for
+URL generation if no URL scheme is
+available.  This defaults to <code class="docutils literal"><span class="pre">http</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">JSON_AS_ASCII</span></code></td>
+<td>By default Flask serialize object to
+ascii-encoded JSON.  If this is set to
+<code class="docutils literal"><span class="pre">False</span></code> Flask will not encode to ASCII
+and output strings as-is and return
+unicode strings.  <code class="docutils literal"><span class="pre">jsonify</span></code> will
+automatically encode it in <code class="docutils literal"><span class="pre">utf-8</span></code>
+then for transport for instance.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">JSON_SORT_KEYS</span></code></td>
+<td>By default Flask will serialize JSON
+objects in a way that the keys are
+ordered.  This is done in order to
+ensure that independent of the hash seed
+of the dictionary the return value will
+be consistent to not trash external HTTP
+caches.  You can override the default
+behavior by changing this variable.
+This is not recommended but might give
+you a performance improvement on the
+cost of cacheability.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">JSONIFY_PRETTYPRINT_REGULAR</span></code></td>
+<td>If this is set to <code class="docutils literal"><span class="pre">True</span></code> (the default)
+jsonify responses will be pretty printed
+if they are not requested by an
+XMLHttpRequest object (controlled by
+the <code class="docutils literal"><span class="pre">X-Requested-With</span></code> header)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">JSONIFY_MIMETYPE</span></code></td>
+<td>MIME type used for jsonify responses.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">TEMPLATES_AUTO_RELOAD</span></code></td>
+<td>Whether to check for modifications of
+the template source and reload it
+automatically. By default the value is
+<code class="docutils literal"><span class="pre">None</span></code> which means that Flask checks
+original file only in debug mode.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">EXPLAIN_TEMPLATE_LOADING</span></code></td>
+<td>If this is enabled then every attempt to
+load a template will write an info
+message to the logger explaining the
+attempts to locate the template.  This
+can be useful to figure out why
+templates cannot be found or wrong
+templates appear to be loaded.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition-more-on-server-name admonition">
+<p class="first admonition-title">More on <code class="docutils literal"><span class="pre">SERVER_NAME</span></code></p>
+<p>The <code class="docutils literal"><span class="pre">SERVER_NAME</span></code> key is used for the subdomain support.  Because
+Flask cannot guess the subdomain part without the knowledge of the
+actual server name, this is required if you want to work with
+subdomains.  This is also used for the session cookie.</p>
+<p class="last">Please keep in mind that not only Flask has the problem of not knowing
+what subdomains are, your web browser does as well.  Most modern web
+browsers will not allow cross-subdomain cookies to be set on a
+server name without dots in it.  So if your server name is
+<code class="docutils literal"><span class="pre">'localhost'</span></code> you will not be able to set a cookie for
+<code class="docutils literal"><span class="pre">'localhost'</span></code> and every subdomain of it.  Please choose a different
+server name in that case, like <code class="docutils literal"><span class="pre">'myapplication.local'</span></code> and add
+this name + the subdomains you want to use into your host config
+or setup a local <a class="reference external" href="https://www.isc.org/downloads/bind/">bind</a>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.4: </span><code class="docutils literal"><span class="pre">LOGGER_NAME</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.5: </span><code class="docutils literal"><span class="pre">SERVER_NAME</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.6: </span><code class="docutils literal"><span class="pre">MAX_CONTENT_LENGTH</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7: </span><code class="docutils literal"><span class="pre">PROPAGATE_EXCEPTIONS</span></code>, <code class="docutils literal"><span class="pre">PRESERVE_CONTEXT_ON_EXCEPTION</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8: </span><code class="docutils literal"><span class="pre">TRAP_BAD_REQUEST_ERRORS</span></code>, <code class="docutils literal"><span class="pre">TRAP_HTTP_EXCEPTIONS</span></code>,
+<code class="docutils literal"><span class="pre">APPLICATION_ROOT</span></code>, <code class="docutils literal"><span class="pre">SESSION_COOKIE_DOMAIN</span></code>,
+<code class="docutils literal"><span class="pre">SESSION_COOKIE_PATH</span></code>, <code class="docutils literal"><span class="pre">SESSION_COOKIE_HTTPONLY</span></code>,
+<code class="docutils literal"><span class="pre">SESSION_COOKIE_SECURE</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9: </span><code class="docutils literal"><span class="pre">PREFERRED_URL_SCHEME</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.10: </span><code class="docutils literal"><span class="pre">JSON_AS_ASCII</span></code>, <code class="docutils literal"><span class="pre">JSON_SORT_KEYS</span></code>, <code class="docutils literal"><span class="pre">JSONIFY_PRETTYPRINT_REGULAR</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11: </span><code class="docutils literal"><span class="pre">SESSION_REFRESH_EACH_REQUEST</span></code>, <code class="docutils literal"><span class="pre">TEMPLATES_AUTO_RELOAD</span></code>,
+<code class="docutils literal"><span class="pre">LOGGER_HANDLER_POLICY</span></code>, <code class="docutils literal"><span class="pre">EXPLAIN_TEMPLATE_LOADING</span></code></p>
+</div>
+</div>
+<div class="section" id="configuring-from-files">
+<h2>Configuring from Files<a class="headerlink" href="#configuring-from-files" title="Permalink to this headline">¶</a></h2>
+<p>Configuration becomes more useful if you can store it in a separate file,
+ideally located outside the actual application package. This makes
+packaging and distributing your application possible via various package
+handling tools (<a class="reference internal" href="../patterns/distribute/#distribute-deployment"><span class="std std-ref">Deploying with Setuptools</span></a>) and finally modifying the
+configuration file afterwards.</p>
+<p>So a common pattern is this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;yourapplication.default_settings&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_envvar</span><span class="p">(</span><span class="s1">&#39;YOURAPPLICATION_SETTINGS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This first loads the configuration from the
+<cite>yourapplication.default_settings</cite> module and then overrides the values
+with the contents of the file the <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal"><span class="pre">YOURAPPLICATION_SETTINGS</span></code>
+environment variable points to.  This environment variable can be set on
+Linux or OS X with the export command in the shell before starting the
+server:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ export YOURAPPLICATION_SETTINGS=/path/to/settings.cfg
+$ python run-app.py
+ * Running on http://127.0.0.1:5000/
+ * Restarting with reloader...
+</pre></div>
+</div>
+<p>On Windows systems use the <cite>set</cite> builtin instead:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="nb">set</span> <span class="n">YOURAPPLICATION_SETTINGS</span><span class="o">=</span>\<span class="n">path</span>\<span class="n">to</span>\<span class="n">settings</span><span class="o">.</span><span class="n">cfg</span>
+</pre></div>
+</div>
+<p>The configuration files themselves are actual Python files.  Only values
+in uppercase are actually stored in the config object later on.  So make
+sure to use uppercase letters for your config keys.</p>
+<p>Here is an example of a configuration file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Example configuration</span>
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;?</span><span class="se">\xbf</span><span class="s1">,</span><span class="se">\xb4\x8d\xa3</span><span class="s1">&quot;&lt;</span><span class="se">\x9c\xb0</span><span class="s1">@</span><span class="se">\x0f</span><span class="s1">5</span><span class="se">\xab</span><span class="s1">,w</span><span class="se">\xee\x8d</span><span class="s1">$0</span><span class="se">\x13\x8b</span><span class="s1">83&#39;</span>
+</pre></div>
+</div>
+<p>Make sure to load the configuration very early on, so that extensions have
+the ability to access the configuration when starting up.  There are other
+methods on the config object as well to load from individual files.  For a
+complete reference, read the <a class="reference internal" href="../api/#flask.Config" title="flask.Config"><code class="xref py py-class docutils literal"><span class="pre">Config</span></code></a> object&#8217;s
+documentation.</p>
+</div>
+<div class="section" id="configuration-best-practices">
+<h2>Configuration Best Practices<a class="headerlink" href="#configuration-best-practices" title="Permalink to this headline">¶</a></h2>
+<p>The downside with the approach mentioned earlier is that it makes testing
+a little harder.  There is no single 100% solution for this problem in
+general, but there are a couple of things you can keep in mind to improve
+that experience:</p>
+<ol class="arabic simple">
+<li>Create your application in a function and register blueprints on it.
+That way you can create multiple instances of your application with
+different configurations attached which makes unittesting a lot
+easier.  You can use this to pass in configuration as needed.</li>
+<li>Do not write code that needs the configuration at import time.  If you
+limit yourself to request-only accesses to the configuration you can
+reconfigure the object later on as needed.</li>
+</ol>
+</div>
+<div class="section" id="development-production">
+<span id="config-dev-prod"></span><h2>Development / Production<a class="headerlink" href="#development-production" title="Permalink to this headline">¶</a></h2>
+<p>Most applications need more than one configuration.  There should be at
+least separate configurations for the production server and the one used
+during development.  The easiest way to handle this is to use a default
+configuration that is always loaded and part of the version control, and a
+separate configuration that overrides the values as necessary as mentioned
+in the example above:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;yourapplication.default_settings&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_envvar</span><span class="p">(</span><span class="s1">&#39;YOURAPPLICATION_SETTINGS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then you just have to add a separate <code class="file docutils literal"><span class="pre">config.py</span></code> file and export
+<code class="docutils literal"><span class="pre">YOURAPPLICATION_SETTINGS=/path/to/config.py</span></code> and you are done.  However
+there are alternative ways as well.  For example you could use imports or
+subclassing.</p>
+<p>What is very popular in the Django world is to make the import explicit in
+the config file by adding <code class="docutils literal"><span class="pre">from</span> <span class="pre">yourapplication.default_settings</span>
+<span class="pre">import</span> <span class="pre">*</span></code> to the top of the file and then overriding the changes by hand.
+You could also inspect an environment variable like
+<code class="docutils literal"><span class="pre">YOURAPPLICATION_MODE</span></code> and set that to <cite>production</cite>, <cite>development</cite> etc
+and import different hardcoded files based on that.</p>
+<p>An interesting pattern is also to use classes and inheritance for
+configuration:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">TESTING</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">DATABASE_URI</span> <span class="o">=</span> <span class="s1">&#39;sqlite://:memory:&#39;</span>
+
+<span class="k">class</span> <span class="nc">ProductionConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="n">DATABASE_URI</span> <span class="o">=</span> <span class="s1">&#39;mysql://user@localhost/foo&#39;</span>
+
+<span class="k">class</span> <span class="nc">DevelopmentConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">class</span> <span class="nc">TestingConfig</span><span class="p">(</span><span class="n">Config</span><span class="p">):</span>
+    <span class="n">TESTING</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>To enable such a config you just have to call into
+<a class="reference internal" href="../api/#flask.Config.from_object" title="flask.Config.from_object"><code class="xref py py-meth docutils literal"><span class="pre">from_object()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;configmodule.ProductionConfig&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are many different ways and it&#8217;s up to you how you want to manage
+your configuration files.  However here a list of good recommendations:</p>
+<ul class="simple">
+<li>Keep a default configuration in version control.  Either populate the
+config with this default configuration or import it in your own
+configuration files before overriding values.</li>
+<li>Use an environment variable to switch between the configurations.
+This can be done from outside the Python interpreter and makes
+development and deployment much easier because you can quickly and
+easily switch between different configs without having to touch the
+code at all.  If you are working often on different projects you can
+even create your own script for sourcing that activates a virtualenv
+and exports the development configuration for you.</li>
+<li>Use a tool like <a class="reference external" href="http://www.fabfile.org/">fabric</a> in production to push code and
+configurations separately to the production server(s).  For some
+details about how to do that, head over to the
+<a class="reference internal" href="../patterns/fabric/#fabric-deployment"><span class="std std-ref">Deploying with Fabric</span></a> pattern.</li>
+</ul>
+</div>
+<div class="section" id="instance-folders">
+<span id="id1"></span><h2>Instance Folders<a class="headerlink" href="#instance-folders" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<p>Flask 0.8 introduces instance folders.  Flask for a long time made it
+possible to refer to paths relative to the application&#8217;s folder directly
+(via <code class="xref py py-attr docutils literal"><span class="pre">Flask.root_path</span></code>).  This was also how many developers loaded
+configurations stored next to the application.  Unfortunately however this
+only works well if applications are not packages in which case the root
+path refers to the contents of the package.</p>
+<p>With Flask 0.8 a new attribute was introduced:
+<code class="xref py py-attr docutils literal"><span class="pre">Flask.instance_path</span></code>.  It refers to a new concept called the
+“instance folder”.  The instance folder is designed to not be under
+version control and be deployment specific.  It&#8217;s the perfect place to
+drop things that either change at runtime or configuration files.</p>
+<p>You can either explicitly provide the path of the instance folder when
+creating the Flask application or you can let Flask autodetect the
+instance folder.  For explicit configuration use the <cite>instance_path</cite>
+parameter:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">instance_path</span><span class="o">=</span><span class="s1">&#39;/path/to/instance/folder&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please keep in mind that this path <em>must</em> be absolute when provided.</p>
+<p>If the <cite>instance_path</cite> parameter is not provided the following default
+locations are used:</p>
+<ul>
+<li><p class="first">Uninstalled module:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">myapp</span><span class="o">.</span><span class="n">py</span>
+<span class="o">/</span><span class="n">instance</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Uninstalled package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">myapp</span>
+    <span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+<span class="o">/</span><span class="n">instance</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Installed module or package:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$PREFIX/lib/python2.X/site-packages/myapp
+$PREFIX/var/myapp-instance
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">$PREFIX</span></code> is the prefix of your Python installation.  This can be
+<code class="docutils literal"><span class="pre">/usr</span></code> or the path to your virtualenv.  You can print the value of
+<code class="docutils literal"><span class="pre">sys.prefix</span></code> to see what the prefix is set to.</p>
+</li>
+</ul>
+<p>Since the config object provided loading of configuration files from
+relative filenames we made it possible to change the loading via filenames
+to be relative to the instance path if wanted.  The behavior of relative
+paths in config files can be flipped between “relative to the application
+root” (the default) to “relative to instance folder” via the
+<cite>instance_relative_config</cite> switch to the application constructor:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">instance_relative_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is a full example of how to configure Flask to preload the config
+from a module and then override the config from a file in the config
+folder if it exists:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">instance_relative_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="s1">&#39;yourapplication.default_settings&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_pyfile</span><span class="p">(</span><span class="s1">&#39;application.cfg&#39;</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The path to the instance folder can be found via the
+<code class="xref py py-attr docutils literal"><span class="pre">Flask.instance_path</span></code>.  Flask also provides a shortcut to open a
+file from the instance folder with <code class="xref py py-meth docutils literal"><span class="pre">Flask.open_instance_resource()</span></code>.</p>
+<p>Example usage for both:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">instance_path</span><span class="p">,</span> <span class="s1">&#39;application.cfg&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># or via open_instance_resource:</span>
+<span class="k">with</span> <span class="n">app</span><span class="o">.</span><span class="n">open_instance_resource</span><span class="p">(</span><span class="s1">&#39;application.cfg&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../">
+  <img class="logo" src="../_static/flask.png" alt="Logo"/>
+</a></p>
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration Handling</a><ul>
+<li><a class="reference internal" href="#configuration-basics">Configuration Basics</a></li>
+<li><a class="reference internal" href="#builtin-configuration-values">Builtin Configuration Values</a></li>
+<li><a class="reference internal" href="#configuring-from-files">Configuring from Files</a></li>
+<li><a class="reference internal" href="#configuration-best-practices">Configuration Best Practices</a></li>
+<li><a class="reference internal" href="#development-production">Development / Production</a></li>
+<li><a class="reference internal" href="#instance-folders">Instance Folders</a></li>
+</ul>
+</li>
+</ul>
+<h3>Versions</h3>
+<ul class="versions">
+  
+    
+      
+        
+      
+      <li><a href="../../dev/config/">Development</a>
+    
+    <span class=note>(unstable)</span>
+  
+    
+      <li><a href="." class="current">Flask 0.12.x</a>
+    
+    <span class=note>(stable)</span>
+  
+    
+      
+        
+      
+      <li><a href="../../0.11/config/">Flask 0.11.x</a>
+    
+    
+  
+    
+      
+        
+      
+      <li><a href="../../0.10/config/">Flask 0.10.x</a>
+    
+    
+  
+</ul>
+<div class="carbon_ads">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pocooorg" id="_carbonads_js"></script>
+</div><h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+      <li>Previous: <a href="../errorhandling/" title="previous chapter">Application Errors</a></li>
+      <li>Next: <a href="../signals/" title="next chapter">Signals</a></li>
+  </ul></li>
+</ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010 - 2017, Armin Ronacher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  
+  </body>
+</html>

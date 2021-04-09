@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Python 3 Support &#8212; Flask Documentation (0.12)</title>
+    
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Upgrading to Newer Releases" href="../upgrading/" />
+    <link rel="prev" title="Pocoo Styleguide" href="../styleguide/" />
+   
+  
+    
+  
+  <link rel="canonical" href="../../latest/python3/">
+  <link media="only screen and (max-device-width: 480px)" href="../_static/small.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body role="document">
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../upgrading/" title="Upgrading to Newer Releases"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../styleguide/" title="Pocoo Styleguide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../">Flask Documentation (0.12)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+  
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="python-3-support">
+<span id="python3-support"></span><h1>Python 3 Support<a class="headerlink" href="#python-3-support" title="Permalink to this headline">¶</a></h1>
+<p>Flask, its dependencies, and most Flask extensions support Python 3.
+You should start using Python 3 for your next project,
+but there are a few things to be aware of.</p>
+<p>You need to use Python 3.3 or higher.  3.2 and older are <em>not</em> supported.</p>
+<p>You should use the latest versions of all Flask-related packages.
+Flask 0.10 and Werkzeug 0.9 were the first versions to introduce Python 3 support.</p>
+<p>Python 3 changed how unicode and bytes are handled, which complicates how low
+level code handles HTTP data.  This mainly affects WSGI middleware interacting
+with the WSGI <code class="docutils literal"><span class="pre">environ</span></code> data.  Werkzeug wraps that information in high-level
+helpers, so encoding issues should not affect you.</p>
+<p>The majority of the upgrade work is in the lower-level libraries like
+Flask and Werkzeug, not the high-level application code.
+For example, all of the examples in the Flask repository work on both Python 2 and 3
+and did not require a single line of code changed.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../">
+  <img class="logo" src="../_static/flask.png" alt="Logo"/>
+</a></p><h3>Versions</h3>
+<ul class="versions">
+  
+    
+      
+        
+      
+      <li><a href="../../dev/python3/">Development</a>
+    
+    <span class=note>(unstable)</span>
+  
+    
+      <li><a href="." class="current">Flask 0.12.x</a>
+    
+    <span class=note>(stable)</span>
+  
+    
+      
+        
+      
+      <li><a href="../../0.11/python3/">Flask 0.11.x</a>
+    
+    
+  
+    
+      
+        
+      
+      <li><a href="../../0.10/python3/">Flask 0.10.x</a>
+    
+    
+  
+</ul>
+<div class="carbon_ads">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pocooorg" id="_carbonads_js"></script>
+</div><h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+      <li>Previous: <a href="../styleguide/" title="previous chapter">Pocoo Styleguide</a></li>
+      <li>Next: <a href="../upgrading/" title="next chapter">Upgrading to Newer Releases</a></li>
+  </ul></li>
+</ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010 - 2017, Armin Ronacher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  
+  </body>
+</html>

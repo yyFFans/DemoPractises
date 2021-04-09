@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HTML/XHTML FAQ &#8212; Flask Documentation (0.12)</title>
+    
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.12',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Security Considerations" href="../security/" />
+    <link rel="prev" title="Design Decisions in Flask" href="../design/" />
+   
+  
+    
+  
+  <link rel="canonical" href="../../latest/htmlfaq/">
+  <link media="only screen and (max-device-width: 480px)" href="../_static/small.css" type= "text/css" rel="stylesheet" />
+
+  </head>
+  <body role="document">
+  
+  
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../security/" title="Security Considerations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../design/" title="Design Decisions in Flask"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../">Flask Documentation (0.12)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+  
+  
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="html-xhtml-faq">
+<h1>HTML/XHTML FAQ<a class="headerlink" href="#html-xhtml-faq" title="Permalink to this headline">¶</a></h1>
+<p>The Flask documentation and example applications are using HTML5.  You
+may notice that in many situations, when end tags are optional they are
+not used, so that the HTML is cleaner and faster to load.  Because there
+is much confusion about HTML and XHTML among developers, this document tries
+to answer some of the major questions.</p>
+<div class="section" id="history-of-xhtml">
+<h2>History of XHTML<a class="headerlink" href="#history-of-xhtml" title="Permalink to this headline">¶</a></h2>
+<p>For a while, it appeared that HTML was about to be replaced by XHTML.
+However, barely any websites on the Internet are actual XHTML (which is
+HTML processed using XML rules).  There are a couple of major reasons
+why this is the case.  One of them is Internet Explorer&#8217;s lack of proper
+XHTML support. The XHTML spec states that XHTML must be served with the MIME
+type <em class="mimetype">application/xhtml+xml</em>, but Internet Explorer refuses to read files
+with that MIME type.
+While it is relatively easy to configure Web servers to serve XHTML properly,
+few people do.  This is likely because properly using XHTML can be quite
+painful.</p>
+<p>One of the most important causes of pain is XML&#8217;s draconian (strict and
+ruthless) error handling.  When an XML parsing error is encountered,
+the browser is supposed to show the user an ugly error message, instead
+of attempting to recover from the error and display what it can.  Most of
+the (X)HTML generation on the web is based on non-XML template engines
+(such as Jinja, the one used in Flask) which do not protect you from
+accidentally creating invalid XHTML.  There are XML based template engines,
+such as Kid and the popular Genshi, but they often come with a larger
+runtime overhead and are not as straightforward to use because they have
+to obey XML rules.</p>
+<p>The majority of users, however, assumed they were properly using XHTML.
+They wrote an XHTML doctype at the top of the document and self-closed all
+the necessary tags (<code class="docutils literal"><span class="pre">&lt;br&gt;</span></code> becomes <code class="docutils literal"><span class="pre">&lt;br/&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;br&gt;&lt;/br&gt;</span></code> in XHTML).
+However, even if the document properly validates as XHTML, what really
+determines XHTML/HTML processing in browsers is the MIME type, which as
+said before is often not set properly. So the valid XHTML was being treated
+as invalid HTML.</p>
+<p>XHTML also changed the way JavaScript is used. To properly work with XHTML,
+programmers have to use the namespaced DOM interface with the XHTML
+namespace to query for HTML elements.</p>
+</div>
+<div class="section" id="history-of-html5">
+<h2>History of HTML5<a class="headerlink" href="#history-of-html5" title="Permalink to this headline">¶</a></h2>
+<p>Development of the HTML5 specification was started in 2004 under the name
+&#8220;Web Applications 1.0&#8221; by the Web Hypertext Application Technology Working
+Group, or WHATWG (which was formed by the major browser vendors Apple,
+Mozilla, and Opera) with the goal of writing a new and improved HTML
+specification, based on existing browser behavior instead of unrealistic
+and backwards-incompatible specifications.</p>
+<p>For example, in HTML4 <code class="docutils literal"><span class="pre">&lt;title/Hello/</span></code> theoretically parses exactly the
+same as <code class="docutils literal"><span class="pre">&lt;title&gt;Hello&lt;/title&gt;</span></code>.  However, since people were using
+XHTML-like tags along the lines of <code class="docutils literal"><span class="pre">&lt;link</span> <span class="pre">/&gt;</span></code>, browser vendors implemented
+the XHTML syntax over the syntax defined by the specification.</p>
+<p>In 2007, the specification was adopted as the basis of a new HTML
+specification under the umbrella of the W3C, known as HTML5.  Currently,
+it appears that XHTML is losing traction, as the XHTML 2 working group has
+been disbanded and HTML5 is being implemented by all major browser vendors.</p>
+</div>
+<div class="section" id="html-versus-xhtml">
+<h2>HTML versus XHTML<a class="headerlink" href="#html-versus-xhtml" title="Permalink to this headline">¶</a></h2>
+<p>The following table gives you a quick overview of features available in
+HTML 4.01, XHTML 1.1 and HTML5. (XHTML 1.0 is not included, as it was
+superseded by XHTML 1.1 and the barely-used XHTML5.)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="14%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">HTML4.01</th>
+<th class="head">XHTML1.1</th>
+<th class="head">HTML5</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;tag/value/</span></code> == <code class="docutils literal"><span class="pre">&lt;tag&gt;value&lt;/tag&gt;</span></code></td>
+<td><img alt="Yes" src="../_images/yes.png" /> <a class="footnote-reference" href="#id4" id="id1">[1]</a></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;br/&gt;</span></code> supported</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /> <a class="footnote-reference" href="#id5" id="id2">[2]</a></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;script/&gt;</span></code> supported</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+</tr>
+<tr class="row-odd"><td>should be served as <cite>text/html</cite></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="No" src="../_images/no.png" /> <a class="footnote-reference" href="#id6" id="id3">[3]</a></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+<tr class="row-even"><td>should be served as
+<cite>application/xhtml+xml</cite></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+</tr>
+<tr class="row-odd"><td>strict error handling</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+</tr>
+<tr class="row-even"><td>inline SVG</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+<tr class="row-odd"><td>inline MathML</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;video&gt;</span></code> tag</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;audio&gt;</span></code> tag</td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+<tr class="row-even"><td>New semantic tags like <code class="docutils literal"><span class="pre">&lt;article&gt;</span></code></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="No" src="../_images/no.png" /></td>
+<td><img alt="Yes" src="../_images/yes.png" /></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>This is an obscure feature inherited from SGML. It is usually not
+supported by browsers, for reasons detailed above.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>This is for compatibility with server code that generates XHTML for
+tags such as <code class="docutils literal"><span class="pre">&lt;br&gt;</span></code>.  It should not be used in new code.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>XHTML 1.0 is the last XHTML standard that allows to be served
+as <cite>text/html</cite> for backwards compatibility reasons.</td></tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="what-does-strict-mean">
+<h2>What does &#8220;strict&#8221; mean?<a class="headerlink" href="#what-does-strict-mean" title="Permalink to this headline">¶</a></h2>
+<p>HTML5 has strictly defined parsing rules, but it also specifies exactly
+how a browser should react to parsing errors - unlike XHTML, which simply
+states parsing should abort. Some people are confused by apparently
+invalid syntax that still generates the expected results (for example,
+missing end tags or unquoted attribute values).</p>
+<p>Some of these work because of the lenient error handling most browsers use
+when they encounter a markup error, others are actually specified.  The
+following constructs are optional in HTML5 by standard, but have to be
+supported by browsers:</p>
+<ul class="simple">
+<li>Wrapping the document in an <code class="docutils literal"><span class="pre">&lt;html&gt;</span></code> tag</li>
+<li>Wrapping header elements in <code class="docutils literal"><span class="pre">&lt;head&gt;</span></code> or the body elements in
+<code class="docutils literal"><span class="pre">&lt;body&gt;</span></code></li>
+<li>Closing the <code class="docutils literal"><span class="pre">&lt;p&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;li&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;dt&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;dd&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;tr&gt;</span></code>,
+<code class="docutils literal"><span class="pre">&lt;td&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;th&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;tbody&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;thead&gt;</span></code>, or <code class="docutils literal"><span class="pre">&lt;tfoot&gt;</span></code> tags.</li>
+<li>Quoting attributes, so long as they contain no whitespace or
+special characters (like <code class="docutils literal"><span class="pre">&lt;</span></code>, <code class="docutils literal"><span class="pre">&gt;</span></code>, <code class="docutils literal"><span class="pre">'</span></code>, or <code class="docutils literal"><span class="pre">&quot;</span></code>).</li>
+<li>Requiring boolean attributes to have a value.</li>
+</ul>
+<p>This means the following page in HTML5 is perfectly valid:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello HTML5<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">header</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Hello HTML5<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">tagline</span><span class="p">&gt;</span>HTML5 is awesome
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">ul</span> <span class="na">class</span><span class="o">=</span><span class="s">nav</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">/index</span><span class="p">&gt;</span>Index<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">/downloads</span><span class="p">&gt;</span>Downloads<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">/about</span><span class="p">&gt;</span>About<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">body</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>HTML5 is probably the future<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>
+    There might be some other things around but in terms of
+    browser vendor support, HTML5 is hard to beat.
+  <span class="p">&lt;</span><span class="nt">dl</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">dt</span><span class="p">&gt;</span>Key 1
+    <span class="p">&lt;</span><span class="nt">dd</span><span class="p">&gt;</span>Value 1
+    <span class="p">&lt;</span><span class="nt">dt</span><span class="p">&gt;</span>Key 2
+    <span class="p">&lt;</span><span class="nt">dd</span><span class="p">&gt;</span>Value 2
+  <span class="p">&lt;/</span><span class="nt">dl</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="new-technologies-in-html5">
+<h2>New technologies in HTML5<a class="headerlink" href="#new-technologies-in-html5" title="Permalink to this headline">¶</a></h2>
+<p>HTML5 adds many new features that make Web applications easier to write
+and to use.</p>
+<ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">&lt;audio&gt;</span></code> and <code class="docutils literal"><span class="pre">&lt;video&gt;</span></code> tags provide a way to embed audio and
+video without complicated add-ons like QuickTime or Flash.</li>
+<li>Semantic elements like <code class="docutils literal"><span class="pre">&lt;article&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;header&gt;</span></code>, <code class="docutils literal"><span class="pre">&lt;nav&gt;</span></code>, and
+<code class="docutils literal"><span class="pre">&lt;time&gt;</span></code> that make content easier to understand.</li>
+<li>The <code class="docutils literal"><span class="pre">&lt;canvas&gt;</span></code> tag, which supports a powerful drawing API, reducing
+the need for server-generated images to present data graphically.</li>
+<li>New form control types like <code class="docutils literal"><span class="pre">&lt;input</span> <span class="pre">type=&quot;date&quot;&gt;</span></code> that allow user
+agents to make entering and validating values easier.</li>
+<li>Advanced JavaScript APIs like Web Storage, Web Workers, Web Sockets,
+geolocation, and offline applications.</li>
+</ul>
+<p>Many other features have been added, as well. A good guide to new features
+in HTML5 is Mark Pilgrim&#8217;s soon-to-be-published book, <a class="reference external" href="http://diveintohtml5.info/">Dive Into HTML5</a>.
+Not all of them are supported in browsers yet, however, so use caution.</p>
+</div>
+<div class="section" id="what-should-be-used">
+<h2>What should be used?<a class="headerlink" href="#what-should-be-used" title="Permalink to this headline">¶</a></h2>
+<p>Currently, the answer is HTML5.  There are very few reasons to use XHTML
+considering the latest developments in Web browsers.  To summarize the
+reasons given above:</p>
+<ul class="simple">
+<li>Internet Explorer (which, sadly, currently leads in market share)
+has poor support for XHTML.</li>
+<li>Many JavaScript libraries also do not support XHTML, due to the more
+complicated namespacing API it requires.</li>
+<li>HTML5 adds several new features, including semantic tags and the
+long-awaited <code class="docutils literal"><span class="pre">&lt;audio&gt;</span></code> and <code class="docutils literal"><span class="pre">&lt;video&gt;</span></code> tags.</li>
+<li>It has the support of most browser vendors behind it.</li>
+<li>It is much easier to write, and more compact.</li>
+</ul>
+<p>For most applications, it is undoubtedly better to use HTML5 than XHTML.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><p class="logo"><a href="../">
+  <img class="logo" src="../_static/flask.png" alt="Logo"/>
+</a></p>
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HTML/XHTML FAQ</a><ul>
+<li><a class="reference internal" href="#history-of-xhtml">History of XHTML</a></li>
+<li><a class="reference internal" href="#history-of-html5">History of HTML5</a></li>
+<li><a class="reference internal" href="#html-versus-xhtml">HTML versus XHTML</a></li>
+<li><a class="reference internal" href="#what-does-strict-mean">What does &#8220;strict&#8221; mean?</a></li>
+<li><a class="reference internal" href="#new-technologies-in-html5">New technologies in HTML5</a></li>
+<li><a class="reference internal" href="#what-should-be-used">What should be used?</a></li>
+</ul>
+</li>
+</ul>
+<h3>Versions</h3>
+<ul class="versions">
+  
+    
+      
+        
+      
+      <li><a href="../../dev/htmlfaq/">Development</a>
+    
+    <span class=note>(unstable)</span>
+  
+    
+      <li><a href="." class="current">Flask 0.12.x</a>
+    
+    <span class=note>(stable)</span>
+  
+    
+      
+        
+      
+      <li><a href="../../0.11/htmlfaq/">Flask 0.11.x</a>
+    
+    
+  
+    
+      
+        
+      
+      <li><a href="../../0.10/htmlfaq/">Flask 0.10.x</a>
+    
+    
+  
+</ul>
+<div class="carbon_ads">
+  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pocooorg" id="_carbonads_js"></script>
+</div><h3>Related Topics</h3>
+<ul>
+  <li><a href="../">Documentation overview</a><ul>
+      <li>Previous: <a href="../design/" title="previous chapter">Design Decisions in Flask</a></li>
+      <li>Next: <a href="../security/" title="next chapter">Security Considerations</a></li>
+  </ul></li>
+</ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010 - 2017, Armin Ronacher.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{
+    "ServerIP": "192.168.53.241",
+    "UserName": "",
+    "PassWD": "",
+    "LocalRepoDir": "",
+    "RemoteDir": "L3_Dev",
+    "SubDirsNoNeedUpload": [
+        ".git",
+        "mocons",
+        "ResourceFile",
+        "PUB\\cfg\\cfg_macro\\resource",
+        "PUB\\cfg\\cfg_macro_etc",
+        "PUB\\cfg\\cfg_macro\\pmm",
+        "PUB\\cfg\\cfg_atca_etc",
+        "PUB\\cfg\\cfg_ibs_etc",
+        "PUB\\cfg\\cfg_ibs\\resource",
+        "PUB\\cfg\\cfg_ibs\\pmm",
+        "PUB\\cfg\\cfg_odbbu\\resource",
+        "PUB\\cfg\\cfg_odbbu\\pmm",
+        "PUB\\cfg_bpb",
+        "PUB\\moStruct",
+        "PUB\\lib\\eTC",
+        "L3\\l3_build\\bbu_3800_ft_windows",
+        "L3\\l3_build\\ibs_3800_ft_windows"
+    ],
+    "CompileAndFetchBin": {
+        "Switch": "ON",
+        "BuildScriptDir": "L3\\l3_build\\bbu_3800_build_cmd",
+        "ShellScripts": [
+            "rrc_bin_enea_linux_debug.sh"
+        ],
+        "LinuxBinDir": "L3/l3_build/bbu_3800_bin/debug/",
+        "LocalBinDir": "D:\\tmpBin"
+    }
+}
